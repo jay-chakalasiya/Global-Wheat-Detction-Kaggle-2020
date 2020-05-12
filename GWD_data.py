@@ -11,6 +11,10 @@ class WheatDataset(torch.utils.data.Dataset):
         
         self.CONFIG=config
         self.TRAIN_DF = pd.read_csv(os.path.join(self.CONFIG.DATA_PATH, 'train.csv'))
+        self.drop_indices = [173, 3687, 4412, 113947, 117344, 118211, 121633, 121634, 147504, 147552]
+        self.TRAIN_DF = self.TRAIN_DF.drop(self.TRAIN_DF.index[self.drop_indices])
+        
+        
         #self.END_IDX = int(len(os.listdir(os.path.join(self.CONFIG.DATA_PATH, 'train')))*self.CONFIG.SPLIT)
         self.END_IDX = int(len(self.TRAIN_DF.image_id.unique())*self.CONFIG.SPLIT)
         self.AUGMENT = augmentation
@@ -49,6 +53,7 @@ class WheatDataset(torch.utils.data.Dataset):
         
         if len(bbox_strings)>0:
             boxes = np.array([self.parse_bbox_string(bbox_string) for bbox_string in bbox_strings], dtype=np.float32)
+            labels = np.array([1]*len(boxes), dtype=np.int64)
             
             if self.AUGMENT:
                 img, boxes = self.augment_img(img, boxes)
