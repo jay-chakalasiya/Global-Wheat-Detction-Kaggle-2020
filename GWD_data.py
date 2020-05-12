@@ -11,12 +11,15 @@ class WheatDataset(torch.utils.data.Dataset):
         
         self.CONFIG=config
         self.TRAIN_DF = pd.read_csv(os.path.join(self.CONFIG.DATA_PATH, 'train.csv'))
-        self.END_IDX = int(len(os.listdir(os.path.join(self.CONFIG.DATA_PATH, 'train')))*self.CONFIG.SPLIT)
+        #self.END_IDX = int(len(os.listdir(os.path.join(self.CONFIG.DATA_PATH, 'train')))*self.CONFIG.SPLIT)
+        self.END_IDX = int(len(self.TRAIN_DF.image_id.unique())*self.CONFIG.SPLIT)
         self.AUGMENT = augmentation
         if train==True:  
-            self.IMGS = [img.split('.')[0] for img in os.listdir(os.path.join(self.CONFIG.DATA_PATH, 'train'))[:self.END_IDX]]
+            #self.IMGS = [img.split('.')[0] for img in os.listdir(os.path.join(self.CONFIG.DATA_PATH, 'train'))[:self.END_IDX]]
+            self.IMGS = self.TRAIN_DF.image_id.unique()[:self.END_IDX]
         else:
-            self.IMGS = [img.split('.')[0] for img in os.listdir(os.path.join(self.CONFIG.DATA_PATH, 'train'))[self.END_IDX:]]
+            #self.IMGS = [img.split('.')[0] for img in os.listdir(os.path.join(self.CONFIG.DATA_PATH, 'train'))[self.END_IDX:]]
+            self.IMGS = self.TRAIN_DF.image_id.unique()[self.END_IDX:]
         np.random.seed(random_seed)
         
     def parse_bbox_string(self, bbox_string):
@@ -49,7 +52,7 @@ class WheatDataset(torch.utils.data.Dataset):
             
             if self.AUGMENT:
                 img, boxes = self.augment_img(img, boxes)
-                labels = np.array([1]*len(boxes), dtype=np.int64)
+                labels = np.array([], dtype=np.int64) if boxes==np.array([], dtype=np.float32) else np.array([1]*len(boxes), dtype=np.int64)
         else:
             boxes = np.array([], dtype=np.float32)
             labels = np.array([], dtype=np.int64)
