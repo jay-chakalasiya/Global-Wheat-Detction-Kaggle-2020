@@ -1,5 +1,6 @@
 data/
 .ipynb_checkpoints/
 model/
+model_dicts/
 __pycache__/
 runs/
