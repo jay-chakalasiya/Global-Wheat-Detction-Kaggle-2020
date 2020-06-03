@@ -9,8 +9,8 @@ def get_augmentors():
         iaa.flip.Fliplr(p=0.5),
         iaa.flip.Flipud(p=0.5),
         iaa.Rot90([0,1,2,3]),
-        iaa.Sometimes(.8, iaa.WithBrightnessChannels(iaa.Add((-50, 50)))),#])
-        iaa.Sometimes(.8, iaa.size.Crop(keep_size=False))])
+        iaa.Sometimes(.8, iaa.WithBrightnessChannels(iaa.Add((-50, 50))))])
+        #iaa.Sometimes(.8, iaa.size.Crop(keep_size=False))])
 
 
 class config():
