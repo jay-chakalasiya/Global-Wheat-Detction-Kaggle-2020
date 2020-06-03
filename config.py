@@ -2,8 +2,6 @@ import os
 import torch
 from imgaug import augmenters as iaa
 
-
-
 def get_augmentors():
     return iaa.Sequential([
         iaa.flip.Fliplr(p=0.5),
