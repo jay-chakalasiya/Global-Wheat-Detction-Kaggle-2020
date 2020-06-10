@@ -293,12 +293,12 @@ class MLP(nn.Module):
 
 
 def build(args):
-    num_classes = 20 if args.dataset_file != 'coco' else 91
-    if args.dataset_file == "coco_panoptic":
-        num_classes = 250
+    # num_classes = 20 if args.dataset_file != 'coco' else 91
+    # if args.dataset_file == "coco_panoptic":
+    #     num_classes = 250
 
     #This is for the wheat detection challenge
-    #num_classes = 1
+    num_classes = 1
     print("Number of output classes: "+str(num_classes))
     device = torch.device(args.device)
 

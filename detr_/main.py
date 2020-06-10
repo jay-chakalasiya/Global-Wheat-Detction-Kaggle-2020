@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader, DistributedSampler
 
 import datasets
 import util.misc as utils
-from datasets import build_dataset, get_coco_api_from_dataset
+#from datasets import build_dataset, get_coco_api_from_dataset
 from engine import evaluate, train_one_epoch
 from models import build_model
 
@@ -139,8 +139,8 @@ def main(args):
                                   weight_decay=args.weight_decay)
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, args.lr_drop)
 
-    dataset_train = build_dataset(image_set='train', args=args)
-    dataset_val = build_dataset(image_set='val', args=args)
+    # dataset_train = build_dataset(image_set='train', args=args)
+    # dataset_val = build_dataset(image_set='val', args=args)
 
     if args.distributed:
         sampler_train = DistributedSampler(dataset_train)
@@ -157,12 +157,12 @@ def main(args):
     data_loader_val = DataLoader(dataset_val, args.batch_size, sampler=sampler_val,
                                  drop_last=False, collate_fn=utils.collate_fn, num_workers=args.num_workers)
 
-    if args.dataset_file == "coco_panoptic":
-        # We also evaluate AP during panoptic training, on original coco DS
-        coco_val = datasets.coco.build("val", args)
-        base_ds = get_coco_api_from_dataset(coco_val)
-    else:
-        base_ds = get_coco_api_from_dataset(dataset_val)
+    # if args.dataset_file == "coco_panoptic":
+    #     # We also evaluate AP during panoptic training, on original coco DS
+    #     coco_val = datasets.coco.build("val", args)
+    #     base_ds = get_coco_api_from_dataset(coco_val)
+    # else:
+    #     base_ds = get_coco_api_from_dataset(dataset_val)
 
     if args.frozen_weights is not None:
         checkpoint = torch.load(args.frozen_weights, map_location='cpu')
@@ -181,12 +181,12 @@ def main(args):
             lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
             args.start_epoch = checkpoint['epoch'] + 1
 
-    if args.eval:
-        test_stats, coco_evaluator = evaluate(model, criterion, postprocessors,
-                                              data_loader_val, base_ds, device, args.output_dir)
-        if args.output_dir:
-            utils.save_on_master(coco_evaluator.coco_eval["bbox"].eval, output_dir / "eval.pth")
-        return
+    # if args.eval:
+    #     test_stats, coco_evaluator = evaluate(model, criterion, postprocessors,
+    #                                           data_loader_val, base_ds, device, args.output_dir)
+    #     if args.output_dir:
+    #         utils.save_on_master(coco_evaluator.coco_eval["bbox"].eval, output_dir / "eval.pth")
+    #     return
 
     print("Start training")
     start_time = time.time()
@@ -211,9 +211,9 @@ def main(args):
                     'args': args,
                 }, checkpoint_path)
 
-        test_stats, coco_evaluator = evaluate(
-            model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
-        )
+        # test_stats, coco_evaluator = evaluate(
+        #     model, criterion, postprocessors, data_loader_val, base_ds, device, args.output_dir
+        # )
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      **{f'test_{k}': v for k, v in test_stats.items()},

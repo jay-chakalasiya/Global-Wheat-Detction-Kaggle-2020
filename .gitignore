@@ -4,3 +4,4 @@ model/
 model_dicts/
 __pycache__/
 runs/
+detr_/GWD_DETR_SD_Epoch_0_Score_0.0000_EpLoss_10197.0107.pt
