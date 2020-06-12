@@ -19,10 +19,10 @@ def get_augmentors():
 
 class config():
     DATA_PATH = os.path.join('','data', 'global-wheat-detection')
-    BATH_SIZE = 8
+    BATH_SIZE = 1
     STEP_SIZE=5
     CHECK_POINT_STEPS = 100
-    DEVICE = torch.device('cuda:1') if torch.cuda.is_available() else torch.device('cpu')
+    DEVICE = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
     SPLIT = 0.8
     AUG = get_augmentors()
     PRECISION_THRESH = [0.5, 0.55, 0.60, 0.65, 0.70, 0.75]
