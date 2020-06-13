@@ -63,8 +63,10 @@ class WheatDataset_edet(torch.utils.data.Dataset):
             boxes = np.array([], dtype=np.float32)
             labels = np.array([], dtype=np.int64)
         labels = np.array([[1]]*len(labels))
-        
-        annot = np.concatenate((boxes, labels), 1)
+        try:
+            annot = np.concatenate((boxes, labels), 1)
+        except:
+            annot = []
         img = np.array(img, dtype=np.float32)/255
         sample = {'img': img, 'annot':annot}
         
