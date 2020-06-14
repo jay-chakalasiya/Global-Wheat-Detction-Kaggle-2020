@@ -54,15 +54,15 @@ class WheatDataset_edet(torch.utils.data.Dataset):
         
         if len(bbox_strings)>0:
             boxes = np.array([self.parse_bbox_string(bbox_string) for bbox_string in bbox_strings], dtype=np.float32)
-            labels = np.array([0]*len(boxes), dtype=np.int64)
+            labels = np.array([1]*len(boxes), dtype=np.int64)
             
             if self.AUGMENT:
                 img, boxes = self.augment_img(img, boxes)
-                labels = np.array([], dtype=np.int64) if boxes==np.array([], dtype=np.float32) else np.array([0]*len(boxes), dtype=np.int64)
+                labels = np.array([], dtype=np.int64) if boxes==np.array([], dtype=np.float32) else np.array([1]*len(boxes), dtype=np.int64)
         else:
             boxes = np.array([], dtype=np.float32)
             labels = np.array([], dtype=np.int64)
-        labels = np.array([[0]]*len(labels))
+        labels = np.array([[1]]*len(labels))
         try:
             annot = np.concatenate((boxes, labels), 1)
         except:
