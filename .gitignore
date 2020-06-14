@@ -3,3 +3,4 @@ data/
 saved_weights/
 __pycache__/
 runs/
+Inference/last.pth
