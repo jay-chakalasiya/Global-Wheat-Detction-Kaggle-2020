@@ -10,11 +10,17 @@ class get_training_handler():
         
         self.config = conf
         self.model_header = 'GWD_FASTERRCNN_'
+        self.check_point_header = self.model_header+'CHKPT_'
         self.headers = ['model_name', 'epoch', 'checkpoint', 'tensorboard_step', 'loss', 'score']
         self.state_path = 'fasterrcnn/fasterrcnn_states.csv'
         
-        if not new and os.path.exists(self.state_path):
+        if os.path.exists(self.state_path):
             self.state_df = pd.read_csv(self.state_path)
+        else:
+            self.state_df = pd.DataFrame(columns=self.headers)
+            
+        
+        if not new:
             self.model_version = list(self.state_df[self.headers[0]])[-1]
             self.last_epoch = list(self.state_df[self.headers[1]])[-1]
             self.last_checkpoint = list(self.state_df[self.headers[2]])[-1]
@@ -24,7 +30,6 @@ class get_training_handler():
 
         
         else:
-            self.state_df = pd.DataFrame(columns=self.headers)
             self.model_version = starter_dir['date']+'V'+starter_dir['version']
             self.last_epoch = 0
             self.last_checkpoint = 0
@@ -35,7 +40,7 @@ class get_training_handler():
         self.writer_path = 'runs/'+self.model_header+self.model_version
         self.writer = SummaryWriter(self.writer_path)
             
-    def save_weights(self, model, score, loss, new_epoch=False):
+    def save_weights(self, model, score, loss, optimizer, scheduler, new_epoch=False):
         '''
         model = pytorch model
         '''
@@ -45,6 +50,12 @@ class get_training_handler():
             self.last_epoch+=1
             
         saved_weight_name = self.model_header+self.model_version+'_EPOCH_{}_CHECKPOINT_{}_SCORE_{:.4f}_LOSS_{:.4f}.pth'.format(self.last_epoch, self.last_checkpoint, score, loss)
+        
+        self.save_checkpoint({'epoch': self.last_epoch, 
+                              'checkpoint': self.last_checkpoint, 
+                              'optimizer': optimizer.state_dict(),
+                              'scheduler': scheduler.state_dict()})
+        
         torch.save(model.state_dict(), os.path.join(self.config.WEIGHT_PATH,saved_weight_name))
         current_state_dir = {self.headers[0]: self.model_version, 
                              self.headers[1]: self.last_epoch, 
@@ -55,6 +66,20 @@ class get_training_handler():
         self.state_df = self.state_df.append(current_state_dir, ignore_index=True)
         self.state_df.to_csv(self.state_path, index=False)
         print('weights_saved...')
+        
+    def save_checkpoint(self, states):
+        '''
+        input: state dir
+        {
+            'epoch': epoch number
+            'checkpoint': checkpoint number
+            'optimizer': optmizer state_dir
+            'scheduler': scheduler state_dir
+        }
+        '''
+        check_point_name = self.model_header+'_EPOCH_{}_CHECKPOINT_{}.chkpt'.format(self.last_epoch, self.last_checkpoint)
+        torch.save(states, os.path.join(self.config.WEIGHT_PATH,check_point_name))
+ 
     
     def publish_to_board(self, total_loss=0, classifier_loss=0, reg_box_loss=0, objectness_loss=0, rpn_reg_loss=0):
         self.tensorboard_step+=1
@@ -80,3 +105,20 @@ class get_training_handler():
         else:
             model = get_model()
         return model
+    
+    def load_optimizers_and_scheduler(self, external_checkpoint_path=None):
+        if external_checkpoint_path:
+            try:
+                states = torch.load(external_checkpoint_path)
+                return states['optimizer'], states['scheduler']
+            except: 
+                pass
+        
+        checkpoint_name = self.model_header+'_EPOCH_{}_CHECKPOINT_{}.chkpt'.format(self.last_epoch, self.last_checkpoint)
+        checkpoint_path = os.path.join(self.config.WEIGHT_PATH, checkpoint_name)
+        
+        if os.path.exists(checkpoint_path):
+            states = torch.load(checkpoint_path)
+            return states['optimizer'], states['scheduler']
+        else:
+            print('No such file exist')
