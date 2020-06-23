@@ -7,7 +7,7 @@ class config():
     
     #$ Data Directory Path
     DATA_PATH = os.path.join('','data', 'global-wheat-detection')
-    
+        
     # Model_weight_path
     WEIGHT_PATH = os.path.join('','saved_weights', 'fasterrcnn')
     
