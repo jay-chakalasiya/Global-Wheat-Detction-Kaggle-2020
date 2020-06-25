@@ -65,7 +65,7 @@ class WheatDataset(torch.utils.data.Dataset):
             return self.get_second_img()
         boxes = np.array([self.parse_bbox_string(bbox_string) for bbox_string in bbox_strings], dtype=np.float32)
         boxes = np.array([self.parse_bbox_string(bbox_string) for bbox_string in bbox_strings], dtype=np.float32)
-        labels = np.array([1]*len(boxes), dtype=np.int64)
+        labels = np.array([0]*len(boxes), dtype=np.int64)
         
         #img
         img_path =  os.path.join(self.CONFIG.DATA_PATH, 'train', self.IMGS[idx]+'.jpg')
@@ -125,10 +125,13 @@ class WheatDataset(torch.utils.data.Dataset):
         # Convert it to channel-first format: image(W,H,C) -> (C,W,H)
         img = np.array(np.moveaxis(img, -1, 0), dtype=np.float32)
         
+        print(boxes[0],boxes[-1])
         # we have boxes in pascal_voc format (x1, y1, x2, y2)
         # DETR Requires the box format to be (x_center, y_center, Height, Width)- scales between 0-1        
         boxes[:,0], boxes[:,1], boxes[:,2], boxes[:,3] = (boxes[:,0]+boxes[:,2])/2, (boxes[:,1]+boxes[:,3])/2, boxes[:,3]-boxes[:,1], boxes[:,2]-boxes[:,0]
+        print(boxes[0],boxes[-1])
         boxes /= 1024
+        print(boxes[0],boxes[-1])
         
         return img, {'boxes':boxes, 'labels':labels}
 
