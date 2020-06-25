@@ -91,7 +91,7 @@ class WheatDataset(torch.utils.data.Dataset):
             print('jumped')
             return self.__getitem__(np.random.randint(self.__len__()))
         boxes = np.array([self.parse_bbox_string(bbox_string) for bbox_string in bbox_strings], dtype=np.float32)
-        labels = np.array([1]*len(boxes), dtype=np.int64)
+        labels = np.array([0]*len(boxes), dtype=np.int64)
         
          
         #image
