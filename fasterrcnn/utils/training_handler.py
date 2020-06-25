@@ -44,10 +44,7 @@ class get_training_handler():
         '''
         model = pytorch model
         '''
-        self.last_checkpoint+=1
-        if new_epoch:
-            self.last_checkpoint=0
-            self.last_epoch+=1
+        
             
         saved_weight_name = self.model_header+self.model_version+'_EPOCH_{}_CHECKPOINT_{}_SCORE_{:.4f}_LOSS_{:.4f}.pth'.format(self.last_epoch, self.last_checkpoint, score, loss)
         
@@ -65,6 +62,12 @@ class get_training_handler():
                              self.headers[5]: loss}
         self.state_df = self.state_df.append(current_state_dir, ignore_index=True)
         self.state_df.to_csv(self.state_path, index=False)
+        
+        self.last_checkpoint+=1
+        if new_epoch:
+            self.last_checkpoint=0
+            self.last_epoch+=1
+            
         print('weights_saved...')
         
     def save_checkpoint(self, states):
@@ -93,7 +96,8 @@ class get_training_handler():
         
         if external_weight_path:
             try:
-                model = get_model(saved_weights = external_weight_path)
+                model = get_model(self.config.DEVICE, saved_weights = external_weight_path)
+                print('model loaded')
                 return model
             except: 
                 pass
@@ -101,9 +105,11 @@ class get_training_handler():
         weight_name = self.model_header+self.model_version+'_EPOCH_{}_CHECKPOINT_{}_SCORE_{:.4f}_LOSS_{:.4f}.pth'.format(self.last_epoch, self.last_checkpoint, self.last_score, self.last_loss)
         weight_path = os.path.join(self.config.WEIGHT_PATH, weight_name)
         if os.path.exists(weight_path):
-            model = get_model(saved_weights = weight_path)
+            model = get_model(self.config.DEVICE, saved_weights = weight_path)
+            print('model loaded')
         else:
-            model = get_model()
+            model = get_model(self.config.DEVICE)
+            print('new model created')
         return model
     
     def load_optimizers_and_scheduler(self, external_checkpoint_path=None):

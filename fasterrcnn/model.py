@@ -3,7 +3,7 @@ import torchvision
 
 
 
-def get_model(num_classes=1,  
+def get_model(device, num_classes=1,
               saved_weights=None): # saved_weights=None if no model is saved
     
     if saved_weights:
@@ -11,7 +11,7 @@ def get_model(num_classes=1,
                                                                      num_classes=num_classes+1,
                                                                      pretrained_backbone=False)
         try:
-            ret = model.load_state_dict(torch.load(saved_weights) , strict=False)
+            ret = model.load_state_dict(torch.load(saved_weights, map_location=device) , strict=False)
             
         except RuntimeError as e:
             print(f'[Warning] Ignoring {e}')
@@ -28,7 +28,8 @@ def get_model(num_classes=1,
         model.roi_heads.box_predictor.bbox_pred = torch.nn.Linear(model.roi_heads.box_predictor.bbox_pred.in_features, 
                                                                   (num_classes+1)*4, 
                                                                   bias=True)
+        print('new_model_created...')
         
-    return model
+    return model.to(device)
 
 
