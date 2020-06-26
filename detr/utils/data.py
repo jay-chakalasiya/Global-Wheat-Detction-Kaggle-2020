@@ -125,13 +125,10 @@ class WheatDataset(torch.utils.data.Dataset):
         # Convert it to channel-first format: image(W,H,C) -> (C,W,H)
         img = np.array(np.moveaxis(img, -1, 0), dtype=np.float32)
         
-        print(boxes[0],boxes[-1])
         # we have boxes in pascal_voc format (x1, y1, x2, y2)
         # DETR Requires the box format to be (x_center, y_center, Height, Width)- scales between 0-1        
         boxes[:,0], boxes[:,1], boxes[:,2], boxes[:,3] = (boxes[:,0]+boxes[:,2])/2, (boxes[:,1]+boxes[:,3])/2, boxes[:,3]-boxes[:,1], boxes[:,2]-boxes[:,0]
-        print(boxes[0],boxes[-1])
         boxes /= 1024
-        print(boxes[0],boxes[-1])
         
         return img, {'boxes':boxes, 'labels':labels}
 
