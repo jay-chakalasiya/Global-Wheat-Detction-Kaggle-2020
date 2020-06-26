@@ -4,3 +4,4 @@ saved_weights/
 __pycache__/
 runs/
 Inference/last.pth
+submission.csv
