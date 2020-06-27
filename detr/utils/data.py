@@ -103,7 +103,7 @@ class WheatDataset(torch.utils.data.Dataset):
             
             # Randomly perfom single of multi image augmentations with 50% probability of each
             # if 1 perform multi-image augmentation
-            if np.random.choice([0,1], 1, p=[0.7,0.3])[0]:
+            if np.random.choice([0,1], 1, p=[1.,0.])[0]:
                 fusion_img = self.get_second_img()
                 augmented_dir = self.AUGMENTOR.multi_augment(current_img, fusion_img)
   
