@@ -123,7 +123,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False):
         
                       # Adding Gaiussian Noise
                       A.GaussNoise(p=0.15
-                                   var_limit=(0, 5255), 
+                                   var_limit=(0, 5/55), 
                                    mean=0, ),
                       
                       # Resizing image to required size by model
