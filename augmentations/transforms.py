@@ -78,10 +78,10 @@ def get_transforms(min_visibility=0., min_area=0., multi=False):
                       A.Transpose(p=0.5),
         
                       # Rotating Image with 10 degrees
-                      A.Rotate(p=0.3 limit=10),
+                      A.Rotate(p=0.3, limit=10),
         
                       # Introducing black patches over image
-                      A.CoarseDropout(p=0.1
+                      A.CoarseDropout(p=0.1,
                                       max_holes=20, 
                                       min_holes=10, 
                                       max_height=50, 
@@ -91,7 +91,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False):
                                       fill_value=0.07),
                       
                       # Introducing white patches over image
-                      A.CoarseDropout(p=0.1 
+                      A.CoarseDropout(p=0.1,
                                       max_holes=20, 
                                       min_holes=10, 
                                       max_height=50, 
@@ -101,7 +101,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False):
                                       fill_value=0.93),
         
                       # Random Blur
-                      A.Blur(p=0.15
+                      A.Blur(p=0.15,
                              blur_limit=5),
         
                       # Shifting HSV value by abut 6%
@@ -111,7 +111,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False):
                       #                     val_shift_limit=15/255),
         
                       # Shifting RGB value by abut 6%
-                      A.RGBShift(p=0.15
+                      A.RGBShift(p=0.15,
                                  r_shift_limit=15/255, 
                                  g_shift_limit=15/255, 
                                  b_shift_limit=15/255),
@@ -122,7 +122,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False):
                       #                           contrast_limit=1),
         
                       # Adding Gaiussian Noise
-                      A.GaussNoise(p=0.15
+                      A.GaussNoise(p=0.15,
                                    var_limit=(0, 5/55), 
                                    mean=0, ),
                       
