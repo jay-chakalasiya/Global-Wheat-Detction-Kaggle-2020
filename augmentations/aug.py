@@ -7,9 +7,9 @@ import numpy as np
 # TODO: Single Image Augmentations
 
 class get_augmentor():
-    def __init__(self, min_visibility=0.3):
-        self.transfrom_multi = get_transforms(multi=True, min_visibility=min_visibility)
-        self.transfrom_single = get_transforms(min_visibility=min_visibility)
+    def __init__(self, min_visibility=0.3, blur = [0.15, 5], gaussian_noise = [0.15, 5/255], rgb_shift = [0.2, 15/255], dropout = 0.1):
+        self.transfrom_multi = get_transforms(multi=True, min_visibility=min_visibility, blur = blur, gaussian_noise = gaussian_noise, rgb_shift = rgb_shift, dropout = dropout)
+        self.transfrom_single = get_transforms(min_visibility=min_visibility, blur = blur, gaussian_noise = gaussian_noise, rgb_shift = rgb_shift, dropout = dropout)
     
     def get_single_augmentor(self):
         return self.transfrom_single

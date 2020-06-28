@@ -1,7 +1,7 @@
 import albumentations as A
 
 
-def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5], gaussian_noise = [0.15, 5/255]):
+def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5], gaussian_noise = [0.15, 5/255], rgb_shift = [0.2, 15/255], dropout = 0.1):
     
     if multi:
         return A.Compose([
@@ -17,7 +17,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5]
                           A.Transpose(p=0.5),
 
                           # Introducing black patches over image
-                          A.CoarseDropout(p=0.5,
+                          A.CoarseDropout(p=dropout,
                                           max_holes=10, 
                                           min_holes=5, 
                                           max_height=40, 
@@ -27,7 +27,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5]
                                           fill_value=0.07),
 
                           # Introducing white patches over image
-                          A.CoarseDropout(p=0.5, 
+                          A.CoarseDropout(p=dropout, 
                                           max_holes=10, 
                                           min_holes=5, 
                                           max_height=40, 
@@ -43,14 +43,14 @@ def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5]
                           #                     val_shift_limit=15/255),
 
                           # Shifting RGB value by abut 6%
-                          A.RGBShift(p=0.20, 
-                                     r_shift_limit=15/255, 
-                                     g_shift_limit=15/255, 
-                                     b_shift_limit=15/255),
+                          A.RGBShift(p=rgb_shift[0], 
+                                     r_shift_limit=rgb_shift[1], 
+                                     g_shift_limit=rgb_shift[1], 
+                                     b_shift_limit=rgb_shift[1]),
 
                           # Adding Gaiussian Noise
-                          A.GaussNoise(p=0.5, 
-                                       var_limit=(0, 2/255), 
+                          A.GaussNoise(p=gaussian_noise[0], 
+                                       var_limit=(0, gaussian_noise[1]), 
                                        mean=0, ),
 
                           # Resizing image to required size by model
@@ -81,7 +81,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5]
                       A.Rotate(p=0.3, limit=10),
         
                       # Introducing black patches over image
-                      A.CoarseDropout(p=0.1,
+                      A.CoarseDropout(p=dropout,
                                       max_holes=20, 
                                       min_holes=10, 
                                       max_height=50, 
@@ -91,7 +91,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5]
                                       fill_value=0.07),
                       
                       # Introducing white patches over image
-                      A.CoarseDropout(p=0.1,
+                      A.CoarseDropout(p=dropout,
                                       max_holes=20, 
                                       min_holes=10, 
                                       max_height=50, 
@@ -101,8 +101,8 @@ def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5]
                                       fill_value=0.93),
         
                       # Random Blur
-                      A.Blur(p=0.,
-                             blur_limit=5),
+                      A.Blur(p=blur[0],
+                             blur_limit=blur[1]),
         
                       # Shifting HSV value by abut 6%
                       #A.HueSaturationValue(p=0.35, 
@@ -111,10 +111,10 @@ def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5]
                       #                     val_shift_limit=15/255),
         
                       # Shifting RGB value by abut 6%
-                      A.RGBShift(p=0.15,
-                                 r_shift_limit=15/255, 
-                                 g_shift_limit=15/255, 
-                                 b_shift_limit=15/255),
+                      A.RGBShift(p=rgb_shift[0],
+                                 r_shift_limit=rgb_shift[1], 
+                                 g_shift_limit=rgb_shift[1], 
+                                 b_shift_limit=rgb_shift[1]),
         
                       # Shifting Brighness and Contrast
                       #A.RandomBrightnessContrast(p=0.5, 
@@ -122,8 +122,8 @@ def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5]
                       #                           contrast_limit=1),
         
                       # Adding Gaiussian Noise
-                      A.GaussNoise(p=0.15,
-                                   var_limit=(0, 5/255), 
+                      A.GaussNoise(p=gaussian_noise[0],
+                                   var_limit=(0, gaussian_noise[1]), 
                                    mean=0, ),
                       
                       # Resizing image to required size by model
