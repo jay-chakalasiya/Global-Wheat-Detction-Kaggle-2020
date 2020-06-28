@@ -101,7 +101,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False):
                                       fill_value=0.93),
         
                       # Random Blur
-                      A.Blur(p=0.15,
+                      A.Blur(p=0.,
                              blur_limit=5),
         
                       # Shifting HSV value by abut 6%
