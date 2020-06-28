@@ -1,7 +1,7 @@
 import albumentations as A
 
 
-def get_transforms(min_visibility=0., min_area=0., multi=False):
+def get_transforms(min_visibility=0., min_area=0., multi=False, blur = [0.15, 5], gaussian_noise = [0.15, 5/255]):
     
     if multi:
         return A.Compose([
@@ -123,7 +123,7 @@ def get_transforms(min_visibility=0., min_area=0., multi=False):
         
                       # Adding Gaiussian Noise
                       A.GaussNoise(p=0.15,
-                                   var_limit=(0, 5/55), 
+                                   var_limit=(0, 5/255), 
                                    mean=0, ),
                       
                       # Resizing image to required size by model
