@@ -88,6 +88,9 @@ class WheatInferenceDataset(torch.utils.data.Dataset):
         img_path =  os.path.join(self.CONFIG.DATA_PATH, 'test', self.IMGS[idx]+'.jpg')
         img = cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)/255
         
+        # resizing it to 1024 just to be sure
+        img = cv2.resize(img, (1024,1024), interpolation = cv2.INTER_AREA)
+        
         
         #IF THE MODEL IS TRAINED ON NORMALIZED IMAGES
         if self.NORMALIZE:
