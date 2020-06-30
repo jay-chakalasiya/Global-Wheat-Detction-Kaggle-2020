@@ -109,6 +109,14 @@ class WheatInferenceDataset(torch.utils.data.Dataset):
 def collate_fn(batch):
     return tuple(zip(*batch))
 
+def post_process(preds, boxes):
+    all_preds = preds.copy()
+    exponent = np.exp(all_preds)
+    label_scores = exponent[:,1]/np.sum(exponent, axis=1)
+    sorted_indices = np.argsort(label_scores)[::-1]
+    return label_scores[sorted_indices], boxes[sorted_indices]
+
+
 
 def format_prediction_string(boxes, scores):
     pred_strings = []
