@@ -1,15 +1,9 @@
-import pandas as pd
-import numpy as np
-import numba
-import re
-import cv2
-import ast
-import matplotlib.pyplot as plt
 from numba import jit
-from typing import List, Union, Tuple
+import numpy as np
 
-#@jit(nopython=True)
-def calculate_iou(gt, pr, form='coco') -> float:
+
+@jit(nopython=True)
+def calculate_iou(gt, pr, form='pascal_voc') -> float:
     """Calculates the Intersection over Union.
 
     Args:
@@ -53,7 +47,7 @@ def calculate_iou(gt, pr, form='coco') -> float:
     return overlap_area / union_area
 
 
-#@jit(nopython=True)
+@jit(nopython=True)
 def find_best_match(gts, pred, pred_idx, threshold = 0.5, form = 'pascal_voc', ious=None) -> int:
     """Returns the index of the 'best match' between the
     ground-truth boxes and the prediction. The 'best match'
@@ -72,7 +66,7 @@ def find_best_match(gts, pred, pred_idx, threshold = 0.5, form = 'pascal_voc', i
     """
     best_match_iou = -np.inf
     best_match_idx = -1
-    
+
     for gt_idx in range(len(gts)):
         
         if gts[gt_idx][0] < 0:
@@ -97,8 +91,10 @@ def find_best_match(gts, pred, pred_idx, threshold = 0.5, form = 'pascal_voc', i
     return best_match_idx
 
 
-#@jit(nopython=True)
-def calculate_precision(gts, preds, threshold = 0.5, form = 'coco', ious=None) -> float:
+
+
+@jit(nopython=True)
+def calculate_precision(gts, preds, threshold = 0.5, form = 'pascal_voc', ious=None) -> float:
     """Calculates precision for GT - prediction pairs at one threshold.
 
     Args:
@@ -121,6 +117,7 @@ def calculate_precision(gts, preds, threshold = 0.5, form = 'coco', ious=None) -
 
         best_match_gt_idx = find_best_match(gts, preds[pred_idx], pred_idx,
                                             threshold=threshold, form=form, ious=ious)
+
         if best_match_gt_idx >= 0:
             # True positive: The predicted box matches a gt box with an IoU above the threshold.
             tp += 1
@@ -139,9 +136,9 @@ def calculate_precision(gts, preds, threshold = 0.5, form = 'coco', ious=None) -
 
 
 
-#
-#@jit(nopython=True)
-def calculate_image_precision(gts, preds, thresholds = (0.5, ), form = 'coco') -> float: # 
+
+@jit(nopython=True)
+def calculate_image_precision(gts, preds, thresholds = (0.5, ), form = 'pascal_voc') -> float:
     """Calculates image precision.
 
     Args:
@@ -166,3 +163,5 @@ def calculate_image_precision(gts, preds, thresholds = (0.5, ), form = 'coco') -
         image_precision += precision_at_threshold / n_threshold
 
     return image_precision
+
+

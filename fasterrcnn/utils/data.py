@@ -34,6 +34,7 @@ class WheatDataset(torch.utils.data.Dataset):
         
         # fix random seeds to get same results again
         np.random.seed(random_seed)
+    
         
     def parse_bbox_string(self, bbox_string):
         ''' 
