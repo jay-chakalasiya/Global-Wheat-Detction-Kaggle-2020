@@ -3,9 +3,9 @@ import torch
 import math
 import torch.utils.model_zoo as model_zoo
 from torchvision.ops import nms
-from retinanet.utils import BasicBlock, Bottleneck, BBoxTransform, ClipBoxes
-from retinanet.anchors import Anchors
-from retinanet import losses
+from retinanet.retinanet.retinanet.utils import BasicBlock, Bottleneck, BBoxTransform, ClipBoxes
+from retinanet.retinanet.retinanet.anchors import Anchors
+from retinanet.retinanet.retinanet import losses
 
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',

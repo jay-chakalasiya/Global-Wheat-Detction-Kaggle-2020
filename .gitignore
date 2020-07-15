@@ -5,3 +5,5 @@ __pycache__/
 runs/
 Inference/last.pth
 submission.csv
+retina_main.py
+coco_resnet_50_map_0_335_state_dict.pt

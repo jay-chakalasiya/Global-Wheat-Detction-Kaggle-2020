@@ -91,9 +91,13 @@ class WheatDataset(torch.utils.data.Dataset):
         # Convert it to channel-first format: image(W,H,C) -> (C,W,H)
         img = np.array(np.moveaxis(img, -1, 0), dtype=np.float32)
 
-        #Retinanet requires image as tensor and combined boxes+labels as tensor
+        #Retinanet requires combined boxes+labels
+        annotations = np.concatenate((boxes,np.expand_dims(labels,axis=1)),axis=1)
 
-        return img_tensor, annot_tensor #{'boxes':boxes, 'labels':labels}
+        # transform from [x, y, w, h] to [x1, y1, x2, y2]
+        annotations[:, 2] = annotations[:, 0] + annotations[:, 2]
+        annotations[:, 3] = annotations[:, 1] + annotations[:, 3]
+        return img, annotations #{'boxes':boxes, 'labels':labels}
 
     def __len__(self):
         return len(self.IMGS)
