@@ -94,9 +94,6 @@ class WheatDataset(torch.utils.data.Dataset):
         #Retinanet requires combined boxes+labels
         annotations = np.concatenate((boxes,np.expand_dims(labels,axis=1)),axis=1)
 
-        # transform from [x, y, w, h] to [x1, y1, x2, y2]
-        annotations[:, 2] = annotations[:, 0] + annotations[:, 2]
-        annotations[:, 3] = annotations[:, 1] + annotations[:, 3]
         return img, annotations #{'boxes':boxes, 'labels':labels}
 
     def __len__(self):
