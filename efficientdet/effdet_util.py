@@ -32,7 +32,7 @@ def collate_fn(batch):
     return tuple(zip(*batch))
 
     
-def make_predictions(images, score_threshold=0.25):
+def make_predictions(images, score_threshold):
     images = torch.stack(images).cuda().float()
     predictions = []
     with torch.no_grad():
