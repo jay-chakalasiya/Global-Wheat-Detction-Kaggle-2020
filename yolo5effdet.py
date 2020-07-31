@@ -27,13 +27,6 @@ def set_seed(seed):
     torch.backends.cudnn.benchmark = True  # type: ignore
     
 
-def run_wbf(boxes, scores, image_size=1024, iou_thr=0.5, skip_box_thr=0.7, weights=None):
-    labels = [np.zeros(score.shape[0]) for score in scores]
-    boxes = [box/(image_size) for box in boxes]
-    boxes, scores, labels = weighted_boxes_fusion(boxes, scores, labels, weights=None, iou_thr=iou_thr, skip_box_thr=skip_box_thr)
-    boxes = boxes*(image_size)
-    return boxes, scores, labels
-
 def TTAImage(image, index):
     image1 = image.copy()
     if index==0: 
