@@ -214,31 +214,6 @@ def calculate_image_precision(gts, preds, thresholds = (0.5, ), form = 'coco') -
     return image_precision
 
 
-def calculate_final_score(all_predictions, iou_thr, skip_box_thr, score_threshold):
-    final_scores = []
-    for i in range(len(all_predictions)):
-        gt_boxes = all_predictions[i]['gt_boxes'].copy()
-        enboxes = all_predictions[i]['pred_enboxes'].copy()
-        enscores = all_predictions[i]['pred_enscores'].copy()
-        image_id = all_predictions[i]['image_id']
-        
-        pred_boxes, scores, labels = run_wbf(enboxes, enscores, image_size=1024, iou_thr=iou_thr, skip_box_thr=skip_box_thr)    
-        pred_boxes = pred_boxes.astype(np.int32).clip(min=0, max=1024)
-
-        indexes = np.where(scores>score_threshold)
-        pred_boxes = pred_boxes[indexes]
-        scores = scores[indexes]
-        
-        # descending conf
-        rank = np.argsort(scores)[::-1]
-        pred_boxes = pred_boxes[rank]
-        scores = scores[rank]
-
-        image_precision = calculate_image_precision(gt_boxes, pred_boxes,thresholds=iou_thresholds,form='pascal_voc')
-        final_scores.append(image_precision)
-
-    return np.mean(final_scores)
-
 def show_result(sample_id, preds, gt_boxes):
     sample = cv2.imread(f'../input/global-wheat-detection/train/{sample_id}.jpg', cv2.IMREAD_COLOR)
     sample = cv2.cvtColor(sample, cv2.COLOR_BGR2RGB)
